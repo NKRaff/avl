@@ -35,18 +35,15 @@ public class AVL {
 	
 	private void insere(No subArvore, int info) {
 		if(info <= subArvore.getInfo()) {
-			if(subArvore.getEsquerda() == null) {
+			if(subArvore.getEsquerda() == null)
 				subArvore.setEsquerda(new No(info));
-				return;
-			}
-			this.insere(subArvore.getEsquerda(), info);
-		} else {
-			if(subArvore.getDireita() == null) {
+			else
+				this.insere(subArvore.getEsquerda(), info);
+		} else
+			if(subArvore.getDireita() == null)
 				subArvore.setDireita(new No(info));
-				return;
-			}
-			this.insere(subArvore.getDireita(), info);
-		}
+			else
+				this.insere(subArvore.getDireita(), info);
 		this.balancear();
 	}
 	
@@ -54,6 +51,75 @@ public class AVL {
 		this.remove(this.raiz, null, info);
 	}
 	
+	private void remove(No subArvore, No pai, int info) {
+		if(subArvore == null)
+			return;
+		else if(subArvore.getInfo() == info) {
+			if(pai == null) {
+				if(subArvore.getEsquerda() != null && subArvore.getDireita() != null) {
+					No sucessor = this.sucessor(this.raiz, info, null);
+					if(sucessor != null) {
+						No paiDoSucessor = this.getPai(this.raiz, sucessor);
+						if(paiDoSucessor.getEsquerda() != this.raiz)
+							paiDoSucessor.setEsquerda(sucessor.getDireita());
+						sucessor.setEsquerda(this.raiz.getEsquerda());
+						sucessor.setDireita(this.raiz.getDireita());
+						this.raiz = sucessor;
+					} else
+						this.raiz = this.raiz.getEsquerda();
+				} else {
+					if(this.raiz.getEsquerda() != null)
+						this.raiz = this.raiz.getEsquerda();
+					else
+						this.raiz = this.raiz.getDireita();
+				}
+			} else {
+				if(subArvore.getEsquerda() != null && subArvore.getDireita() != null) {
+					No sucessor = this.sucessor(subArvore, info, null);
+					No paiDoSucessor = this.getPai(this.raiz, sucessor);
+					paiDoSucessor.setEsquerda(sucessor.getDireita());
+					if(pai.getEsquerda() == subArvore)
+						pai.setEsquerda(sucessor);
+					else
+						pai.setDireita(sucessor);
+					sucessor.setEsquerda(subArvore.getEsquerda());
+					sucessor.setDireita(subArvore.getDireita());
+					
+				} else {
+					if(pai.getEsquerda() == subArvore) {
+						if(subArvore.getEsquerda() != null)
+							pai.setEsquerda(subArvore.getEsquerda());
+						else
+							pai.setEsquerda(subArvore.getDireita());
+					} else {
+						if(subArvore.getEsquerda() != null)
+							pai.setDireita(subArvore.getEsquerda());
+						else
+							pai.setDireita(subArvore.getDireita());
+					}
+				}
+			}
+			this.balancear();
+		} else {
+			if(info <= subArvore.getInfo())
+				this.remove(subArvore.getEsquerda(), subArvore, info);
+			else
+				this.remove(subArvore.getDireita(), subArvore, info);
+		}
+	}
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	
+	/*
 	private void remove(No subArvore, No pai, int info) {
 		if(subArvore == null)
 			return;
@@ -109,11 +175,11 @@ public class AVL {
 				this.remove(subArvore.getDireita(), subArvore, info);
 		}
 	}
+	 */
 	
 	// SO É POSSIVEL ACHO O NO CRITICO APOS ATUALIZAR FB
 	// SO É POSSIVEL ACHO O PAI DO CRITICO SE ACHAR O CRITICO
 	// SO É POSSIVEL ATUALIZAR SE TIVER O PAI DO CRITICO
-	
 	/*
 	TIPO DE ROTAÇÕES
 	 * 		ROTAÇÃO A ESQUERDA -> QUANDO DESBALANCEADO PARA A DIREITA
@@ -126,7 +192,7 @@ public class AVL {
 		No noCritico = this.getNoCritico(this.raiz, null);
 		
 		while(noCritico != null) {
-			No paiDoNoCritico = this.getPaiDoNoCritico(this.raiz, noCritico);
+			No paiDoNoCritico = this.getPai(this.raiz, noCritico);
 			if(noCritico.getFb() > 0) { // DESBALANCEADO PARA ESQUERDA
 				// ROTAÇÃO DIREITA
 				if(noCritico.getEsquerda().getFb() < 0) // ROTAÇÃO DUPLA DIREITA
@@ -188,17 +254,17 @@ public class AVL {
 		return noCritico;
 	}
 	
-	private No getPaiDoNoCritico(No subArvore, No noCritico) {
-		if(subArvore == null || noCritico == this.raiz)
+	private No getPai(No subArvore, No noFilho) {
+		if(subArvore == null || noFilho == this.raiz)
 			return null;
-		if(noCritico.getInfo() <= subArvore.getInfo()) {
-			if(subArvore.getEsquerda() == noCritico)
+		if(noFilho.getInfo() <= subArvore.getInfo()) {
+			if(subArvore.getEsquerda() == noFilho)
 				return subArvore;
-			return this.getPaiDoNoCritico(subArvore.getEsquerda(), noCritico);
+			return this.getPai(subArvore.getEsquerda(), noFilho);
 		} else {
-			if(subArvore.getDireita() == noCritico)
+			if(subArvore.getDireita() == noFilho)
 				return subArvore;
-			return this.getPaiDoNoCritico(subArvore.getDireita(), noCritico);
+			return this.getPai(subArvore.getDireita(), noFilho);
 		}
 	}
 	
@@ -225,7 +291,7 @@ public class AVL {
 		else if(subArvore.getInfo() == info) {
 			if(subArvore.getDireita() == null)
 				return sucessor;
-			return this.minimo(subArvore);
+			return this.minimo(subArvore.getDireita());
 		}
 		sucessor = (subArvore.getInfo() > info) ? subArvore : sucessor;
 		if(info <= subArvore.getInfo())

@@ -9,37 +9,123 @@ import org.junit.jupiter.api.Test;
 class AVLTest {
 	
 	/*
-	 	- INSERÇÃO -
-	 
- 		SEM ROTAÇÃO
-
-		ROTAÇÃO SIMPLES A ESQUERDA NA RAIZ, SEM FILHO
-		ROTAÇÃO SIMPLES A ESQUERDA NA RAIZ, COM FILHO
-		ROTAÇÃO SIMPLES A DIREITA NA RAIZ, SEM FILHO
-		ROTAÇÃO SIMPLES A DIREITA NA RAIZ, COM FILHO
-		ROTAÇÃO DUPLA A ESQUERDA NA RAIZ, SEM FILHO
-		ROTAÇÃO DUPLA A ESQUERDA NA RAIZ, COM FILHO
-		ROTAÇÃO DUPLA A DIREITA NA RAIZ, SEM FILHO
-		ROTAÇÃO DUPLA A DIREITA NA RAIZ, COM FILHO
-		
-		ROTAÇÃO SIMPLES A ESQUERDA NO MEIO, SEM FILHO
-		ROTAÇÃO SIMPLES A ESQUERDA NO MEIO, COM FILHO
-		ROTAÇÃO SIMPLES A DIREITA NO MEIO, SEM FILHO
-		ROTAÇÃO SIMPLES A DIREITA NO MEIO, COM FILHO
-		ROTAÇÃO DUPLA A ESQUERDA NO MEIO, SEM FILHO
-		ROTAÇÃO DUPLA A ESQUERDA NO MEIO, COM FILHO
-		ROTAÇÃO DUPLA A DIREITA NO MEIO, SEM FILHO
-		ROTAÇÃO DUPLA A DIREITA NO MEIO, COM FILHO
-		
-		- REMOÇÃO -
+	 	TESTES
+	 	
+	 	- INSERÇAO
+	 		INSERIR NA RAIZ
+	 		INSERIR A ESQUERDA
+	 		INSERIR A DIREITA
+	 	- REMOÇÃO
+	 		REMOVER NA RAIZ
+	 			QUANDO ARVORE POSSUIR APENAS RAIZ
+	 			QUANDO NÃO POSSUI SUCESSOR
+	 			QUANDO POSSUI SUCESSOR
+	 			QUANDO SUCESSOR POSSUIR FILHO
+	 		REMOVE UMA FOLHA QUALQUER
+	 			QUANDO NÃO TIVER FILHOS
+	 			QUANDO TIVER 1 FILHO
+ 					FILHO NA ESQUERDA
+			 			QUANDO NÃO POSSUIR SUCESSOR
+			 			QUANDO POSSUI SUCESSOR
+	 				FILHO NA DIREITA
+	 			QUANDO TIVER 2 FILHOS
+	 	- ROTAÇÃO
+	 		ROTAÇÃO NA RAIZ
+	 			QUANDO CRITICO NÃO TIVER FILHO
+	 				ROTAÇÃO SIMPLES A ESQUERDA
+	 				ROTAÇÃO SIMPLES A DIREITA
+	 				ROTAÇÃO DUPLA A ESQUERDA
+	 				ROTAÇÃO DUPLA A DIREITA
+	 			QUANDO CRITICO TIVER FILHO
+	 				ROTAÇÃO SIMPLES A ESQUERDA
+	 				ROTAÇÃO SIMPLES A DIREITA
+	 				ROTAÇÃO DUPLA A ESQUERDA
+	 				ROTAÇÃO DUPLA A DIREITA
+	 		ROTAÇÃO EM UM NO QUALQUER
+	 			QUANDO CRITICO NÃO TIVER FILHO
+	 				ROTAÇÃO SIMPLES A ESQUERDA
+	 				ROTAÇÃO SIMPLES A DIREITA
+	 				ROTAÇÃO DUPLA A ESQUERDA
+	 				ROTAÇÃO DUPLA A DIREITA
+	 			QUANDO CRITICO TIVER FILHO
+	 				ROTAÇÃO SIMPLES A ESQUERDA
+	 				ROTAÇÃO SIMPLES A DIREITA
+	 				ROTAÇÃO DUPLA A ESQUERDA
+	 				ROTAÇÃO DUPLA A DIREITA
 	*/
 
 	private AVL avl;
 	
 	@BeforeEach
 	public void setUp() {
-		avl = new AVL();
+		avl = new AVL(15);
 	}
+	
+	@Test
+	@DisplayName("Inserir na raiz")
+	void insercao_quandoRaizNull_deveInserirNaAVL() {
+		assertEquals("15(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Inserir a esquerda")
+	void insercao_quandoInserirAEsquerda_deveInserirAEsquerda() {
+		avl.insere(6);
+		assertEquals("15(1)6(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Inserir a direita")
+	void insercao_quandoInserirADireita_deveInserirADireita() {
+		avl.insere(18);
+		assertEquals("15(-1)18(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remover raiz quando possui apenas a raiz")
+	void removerRaiz_quandoPossuiApenasARaiz_deveRetornaArvoreVazia() {
+		avl.remove(15);
+		assertEquals("", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remover raiz quando não possui sucessor")
+	void removerRaiz_quandoNaoPossuiSucessor_deveRemoverARaiz() {
+		avl.insere(6);
+		avl.remove(15);
+		assertEquals("6(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remover raiz quando possui sucessor")
+	void removerRaiz_quandoPossuiSucessor_deveRemoverARaiz() {
+		avl.insere(18);
+		avl.remove(15);
+		assertEquals("18(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remover raiz quando raiz possui 2 filhos")
+	void removerRaiz_quandoPossuiDoisFilhos_deveRemoverARaiz() {
+		avl.insere(6);
+		avl.insere(18);
+		avl.remove(15);
+		assertEquals("18(1)6(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remover raiz quando sucessor possui filho")
+	void removerRaiz_quandoSucessorPossuiFilho_deveRemoverARaiz() {
+		avl.insere(6);
+		avl.insere(18);
+		avl.insere(22);
+		avl.remove(15);
+		assertEquals("18(0)6(0)22(0)", null);
+	}
+	
+	
+	
+	
 	/*
 	@Test
 	@DisplayName("Inserção equilibrada sem a necessidade de rotação")
@@ -132,11 +218,47 @@ class AVLTest {
 		avl.insere(7);
 		assertEquals("10(1)6(0)5(1)4(0)8(0)7(0)9(0)12(1)11(0)", avl.preOrdem());
 	}
-	*/
-	/////////////////////////////////////////////////
+	/////////////////////////////////////////
 	
 	@Test
-	void remocao1() {
+	@DisplayName("Remoção equilibrada com nenhum filho")
+	void remocao_quandoNãoTiverFilhosNoMeio_deveRetornarPreORdemEquilibrado() {
+		avl.insere(15);
+		avl.insere(6);
+		avl.insere(18);
+		avl.insere(1);
+		avl.insere(9);
+		avl.insere(16);
+		avl.insere(22);
+		avl.insere(7);
+		avl.insere(14);
+		avl.insere(17);
+		avl.remove(14);
+		assertEquals("15(0)6(-1)1(0)9(1)7(0)18(1)16(-1)17(0)22(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remoção equilibrada com um filho")
+	void remocao_quandoTiverUmFilhoNoMeio_deveRetornarPreOrdemEquilibrado() {
+		avl.insere(15);
+		avl.insere(6);
+		avl.insere(18);
+		avl.insere(1);
+		avl.insere(9);
+		avl.insere(16);
+		avl.insere(22);
+		avl.insere(2);
+		avl.insere(7);
+		avl.insere(14);
+		avl.insere(17);
+		avl.insere(8);
+		avl.remove(7);
+		assertEquals("15(0)6(0)1(-1)2(0)9(0)8(0)14(0)18(1)16(-1)17(0)22(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remoção equilibrada com 2 filhos")
+	void remocao_quandoTiverDoisFilhosNoMeio_deveRetornarPreOrdemEquilibrado() {
 		avl.insere(15);
 		avl.insere(6);
 		avl.insere(18);
@@ -150,6 +272,50 @@ class AVLTest {
 		avl.insere(17);
 		avl.insere(8);
 		avl.remove(6);
-		System.out.println(avl.preOrdem());
+		assertEquals("15(0)7(0)1(-1)2(0)9(0)8(0)14(0)18(1)16(-1)17(0)22(0)", avl.preOrdem());
 	}
+	
+	@Test
+	@DisplayName("Remoção equilibrada sem filho na raiz")
+	void remocao_quandoRemoveRaizQueNaoTemFilho_deveRetornarPreOrdemEquilibrado() {
+		avl.insere(15);
+		avl.remove(15);
+		assertEquals("", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remoção equilibrado na raiz quando não tem sucessor")
+	void remocao_naRaizQuandoNaoPossuiSucessor_deveRetornarPreOrdemEquilibrado() {
+		avl.insere(15);
+		avl.insere(6);
+		avl.remove(15);
+		assertEquals("6(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remoção equilibrado raiz quando possui sucessor")
+	void remocao_naRaizQuandoPossuiSucessor_deveRetornarPreORdemEquilibrado() {
+		avl.insere(15);
+		avl.insere(18);
+		avl.remove(15);
+		assertEquals("18(0)", avl.preOrdem());
+	}
+	
+	@Test
+	@DisplayName("Remoção equilibrado na raiz quando sucesso possui filho")
+	void remocao_naRaizQuandoSucessorTemFilho() {
+		avl.insere(15);
+		avl.insere(7);
+		avl.insere(18);
+		avl.insere(1);
+		avl.insere(9);
+		avl.insere(16);
+		avl.insere(22);
+		avl.insere(8);
+		avl.insere(14);
+		avl.insere(17);
+		avl.remove(15);
+		assertEquals("16(1)7(-1)1(0)9(0)8(0)14(0)18(0)17(0)22(0)", avl.preOrdem());
+	}
+	*/
 }
