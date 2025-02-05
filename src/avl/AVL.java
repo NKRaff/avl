@@ -60,10 +60,11 @@ public class AVL {
 					No sucessor = this.sucessor(this.raiz, info, null);
 					if(sucessor != null) {
 						No paiDoSucessor = this.getPai(this.raiz, sucessor);
-						if(paiDoSucessor.getEsquerda() != this.raiz)
+						if(/*paiDoSucessor != null*/paiDoSucessor != subArvore) {
 							paiDoSucessor.setEsquerda(sucessor.getDireita());
+							sucessor.setDireita(this.raiz.getDireita());
+						}
 						sucessor.setEsquerda(this.raiz.getEsquerda());
-						sucessor.setDireita(this.raiz.getDireita());
 						this.raiz = sucessor;
 					} else
 						this.raiz = this.raiz.getEsquerda();
@@ -75,16 +76,17 @@ public class AVL {
 				}
 			} else {
 				if(subArvore.getEsquerda() != null && subArvore.getDireita() != null) {
-					No sucessor = this.sucessor(subArvore, info, null);
+					No sucessor = this.sucessor(this.raiz, info, null);
 					No paiDoSucessor = this.getPai(this.raiz, sucessor);
-					paiDoSucessor.setEsquerda(sucessor.getDireita());
+					if(paiDoSucessor != subArvore) {
+						paiDoSucessor.setEsquerda(sucessor.getDireita());
+						sucessor.setDireita(subArvore.getDireita());						
+					}
+					sucessor.setEsquerda(subArvore.getEsquerda());
 					if(pai.getEsquerda() == subArvore)
 						pai.setEsquerda(sucessor);
 					else
 						pai.setDireita(sucessor);
-					sucessor.setEsquerda(subArvore.getEsquerda());
-					sucessor.setDireita(subArvore.getDireita());
-					
 				} else {
 					if(pai.getEsquerda() == subArvore) {
 						if(subArvore.getEsquerda() != null)
@@ -107,75 +109,6 @@ public class AVL {
 				this.remove(subArvore.getDireita(), subArvore, info);
 		}
 	}
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	
-	/*
-	private void remove(No subArvore, No pai, int info) {
-		if(subArvore == null)
-			return;
-		else if(subArvore.getInfo() == info) {
-			if(pai == null) {
-				if(this.raiz.getEsquerda() == null && subArvore.getDireita() == null)
-					this.raiz = null;
-				else if(this.raiz.getEsquerda() != null && subArvore.getDireita() != null) {
-					No sucessor = this.sucessor(subArvore, info, null);
-					subArvore.getDireita().setEsquerda(sucessor.getDireita());
-					this.raiz = sucessor;
-					sucessor.setEsquerda(subArvore.getEsquerda());
-					sucessor.setDireita(subArvore.getDireita());
-				}
-			} else {
-				// SE FOR REMOVER QUALQUER OUTRO
-				if(subArvore.getEsquerda() == null && subArvore.getDireita() == null) {
-					// SE NÃO TIVER FILHOS
-					if(pai.getEsquerda() == subArvore) {
-						pai.setEsquerda(null);
-					} else {
-						pai.setDireita(null);
-					}
-				} else if(subArvore.getEsquerda() != null && subArvore.getDireita() != null) {
-					// SE TIVER 2 FILHOS
-					No sucessor = this.sucessor(subArvore, info, null);
-					subArvore.getDireita().setEsquerda(sucessor.getDireita());
-					if(pai.getEsquerda() == subArvore)
-						pai.setEsquerda(sucessor);
-					else
-						pai.setDireita(sucessor);
-					sucessor.setEsquerda(subArvore.getEsquerda());
-					sucessor.setDireita(subArvore.getDireita());
-				} else {
-					// SE TIVER 1 FILHO
-					if(pai.getEsquerda() == subArvore) {
-						if(subArvore.getEsquerda() != null)
-							pai.setEsquerda(subArvore.getEsquerda());
-						else
-							pai.setEsquerda(subArvore.getDireita());
-					} else {
-						if(subArvore.getEsquerda() != null)
-							pai.setDireita(subArvore.getEsquerda());
-						else
-							pai.setDireita(subArvore.getDireita());
-					}
-				}
-			}
-		} else {
-			if(info <= subArvore.getInfo())
-				this.remove(subArvore.getEsquerda(), subArvore, info);
-			else
-				this.remove(subArvore.getDireita(), subArvore, info);
-		}
-	}
-	 */
 	
 	// SO É POSSIVEL ACHO O NO CRITICO APOS ATUALIZAR FB
 	// SO É POSSIVEL ACHO O PAI DO CRITICO SE ACHAR O CRITICO
